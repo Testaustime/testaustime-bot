@@ -1,0 +1,11 @@
+version: "3.5"
+
+services:
+  bot:
+    image: ghcr.io/testaustime/testaustime-bot:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    restart: always
+    stop_grace_period: 5s

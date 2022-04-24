@@ -1,0 +1,105 @@
+{
+    "name": "testaustime-bot",
+    "version": "1.0.0",
+    "description": "Discord bot for Testaustime",
+    "author": "Antti <antti@antti.codes>",
+    "private": true,
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node -r dotenv/config --es-module-specifier-resolution=node .",
+        "deploy": "node -r dotenv/config --es-module-specifier-resolution=node src/scripts/deploy.js",
+        "lint": "yarn eslint src --fix --ext js",
+        "format": "yarn prettier --write .",
+        "update": "yarn upgrade-interactive --latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Testaustime/testaustime-bot.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Testaustime/testaustime-bot/issues"
+    },
+    "homepage": "https://github.com/Testaustime/testaustime-bot#readme",
+    "engines": {
+        "node": ">=16",
+        "npm": ">=7"
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ]
+    },
+    "lint-staged": {
+        "*.js": "eslint --fix --ext js"
+    },
+    "prettier": {
+        "printWidth": 100,
+        "tabWidth": 4,
+        "semi": true,
+        "singleQuote": false,
+        "quoteProps": "as-needed",
+        "trailingComma": "es5",
+        "bracketSpacing": true,
+        "arrowParens": "always",
+        "endOfLine": "lf",
+        "overrides": [
+            {
+                "files": [
+                    "*.yml"
+                ],
+                "options": {
+                    "tabWidth": 2
+                }
+            }
+        ]
+    },
+    "eslintConfig": {
+        "env": {
+            "es2021": true,
+            "node": true
+        },
+        "extends": [
+            "airbnb-base",
+            "prettier"
+        ],
+        "parserOptions": {
+            "ecmaVersion": "latest",
+            "sourceType": "module"
+        },
+        "rules": {
+            "no-console": "off",
+            "no-param-reassign": "off",
+            "no-restricted-syntax": "off",
+            "import/prefer-default-export": "off",
+            "import/no-default-export": "error"
+        },
+        "overrides": [
+            {
+                "files": [
+                    "src/events/*"
+                ],
+                "rules": {
+                    "import/no-default-export": "off"
+                }
+            }
+        ]
+    },
+    "dependencies": {
+        "bent": "^7.3.12",
+        "discord.js": "^13.6.0",
+        "dotenv": "^14.3.2"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^16.2.3",
+        "@commitlint/config-conventional": "^16.2.1",
+        "eslint": "^8.8.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.25.4",
+        "husky": "^7.0.4",
+        "lint-staged": "^12.4.0",
+        "prettier": "^2.5.1",
+        "pretty-quick": "^3.1.3"
+    }
+}
