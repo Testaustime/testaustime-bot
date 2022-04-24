@@ -20,7 +20,7 @@ export async function updateLeaderboardCache() {
             await ctx.testaustime.getLeaderboard(config.testaustime.leaderboard).catch(() => null)
         );
         if (res) {
-            ctx.cache.leaderboard = res.members;
+            ctx.cache.leaderboard = res.members.filter((u) => u.username !== ctx.data.botName);
             ctx.cache.lastUpdatedLeaderboard = Date.now();
         }
     }
