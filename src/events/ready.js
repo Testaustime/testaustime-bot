@@ -13,6 +13,6 @@ export default async function ready() {
         const revision = await readFile("./revision", "utf-8").catch(() => "unknown");
         const ch = await ctx.client.channels.fetch(config.statusChannel);
         if (!(ch instanceof TextChannel)) throw new Error("Status channel is not a text channel");
-        await ch.send(`Testaustime bot online! \`${revision}\``);
+        await ch.send(`Testaustime bot online! \`${revision}\``).catch(() => null);
     }
 }
