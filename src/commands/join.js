@@ -16,6 +16,6 @@ export async function run(command) {
         content:
             `Join general leaderboard with: \`${ctx.data.leaderboardInvite}\`\n` +
             `Allow more data as a friend: \`ttfc_${ctx.data.friendCode}\``,
-        ephemeral: true,
+        ephemeral: false,
     });
 }
