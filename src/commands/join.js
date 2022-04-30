@@ -14,7 +14,7 @@ export const data = {
 export async function run(command) {
     await command.reply({
         content:
-            `Join general leaderboard with: \`${ctx.data.leaderboardInvite}\`\n` +
+            `Join general leaderboard with: \`ttlic_${ctx.data.leaderboardInvite}\`\n` +
             `Allow more data as a friend: \`ttfc_${ctx.data.friendCode}\``,
         ephemeral: true,
     });
