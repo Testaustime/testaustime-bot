@@ -64,7 +64,7 @@ export function createLeaderboardMessage(user, page) {
             top
                 .map(
                     (u, i) =>
-                        `**${PER_PAGE * page + i + 1}.** ${Util.escapeMarkdown(
+                        `**${PER_PAGE * page + i}.** ${Util.escapeMarkdown(
                             u.username
                         )} - \`${TimeUtil.formatSecond(u.time_coded)}\``
                 )
