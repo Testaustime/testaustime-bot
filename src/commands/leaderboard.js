@@ -58,7 +58,7 @@ export function createLeaderboardMessage(user, page) {
         .slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
     const embed = new MessageEmbed()
-        .setTitle("Leaderboard (Past 7 days)"
+        .setTitle("Leaderboard (Past 7 days)")
         .setColor("AQUA")
         .setDescription(
             top
