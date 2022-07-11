@@ -22,6 +22,10 @@ export const data = {
             required: false,
             choices: [
                 {
+                    name: "past day",
+                    value: "day",
+                },
+                {
                     name: "past week",
                     value: "week",
                 },
@@ -110,10 +114,11 @@ export async function run(command) {
     const project = command.options.getString("project", false);
 
     const timeframe = command.options.getString("timeframe", false) ?? "month";
-    const cutoffPoint =
-        timeframe === "week"
-            ? Date.now() - TimeUtil.Multipliers.WEEK * 1000
-            : Date.now() - TimeUtil.Multipliers.MONTH * 1000;
+    const cutoffPoint = {
+        day: Date.now() - TimeUtil.Multipliers.DAY * 1000,
+        week: Date.now() - TimeUtil.Multipliers.WEEK * 1000,
+        month: Date.now() - TimeUtil.Multipliers.MONTH * 1000,
+    }[timeframe];
 
     const activity = unfiltered.filter(
         (e) =>
@@ -150,6 +155,7 @@ export async function run(command) {
             `Total time programmed in ${
                 {
                     all: "total",
+                    day: "the past day",
                     month: "the last 30 days",
                     week: "the last 7 days",
                 }[timeframe]
