@@ -39,6 +39,7 @@ client.on("ready", async () => {
         ).filter(Boolean);
 
         const target = guildId ? await client.guilds.fetch(guildId) : client.application;
+        if (!target) throw new Error("Target not found.");
         await target.commands.set(commands);
         console.log("Deployed commands!");
     } catch (e) {

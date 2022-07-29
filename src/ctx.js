@@ -36,7 +36,9 @@
  * @type {Context}
  */
 export const ctx = {
+    // @ts-ignore
     client: null,
+    // @ts-ignore
     testaustime: null,
     commands: new Map(),
     buttons: new Map(),

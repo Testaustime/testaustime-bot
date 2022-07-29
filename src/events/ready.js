@@ -7,7 +7,7 @@ import { ctx } from "../ctx";
  * @return {Promise<void>}
  */
 export default async function ready() {
-    console.log(`Ready and logged in as ${ctx.client.user.tag}!`);
+    console.log(`Ready and logged in as ${ctx.client.user?.tag}!`);
 
     if (process.env.NODE_ENV === "production") {
         const revision = await readFile("./revision", "utf-8").catch(() => "unknown");

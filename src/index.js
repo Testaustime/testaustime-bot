@@ -1,5 +1,5 @@
 import { readdir } from "node:fs/promises";
-import { Client, Intents } from "discord.js";
+import { ActivityType, Client, GatewayIntentBits } from "discord.js";
 import { Testaustime } from "./lib/Testaustime";
 import { ctx } from "./ctx";
 import { config } from "./config";
@@ -21,13 +21,13 @@ console.log("Testaustime client started");
 console.log("Starting Discord client...");
 
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS],
+    intents: [GatewayIntentBits.Guilds],
     presence: {
         status: "online",
         activities: [
             {
                 name: "you code",
-                type: "WATCHING",
+                type: ActivityType.Playing,
             },
         ],
     },

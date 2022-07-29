@@ -1,3 +1,4 @@
+import { InteractionType } from "discord.js";
 import { ctx } from "../ctx";
 
 /**
@@ -5,7 +6,7 @@ import { ctx } from "../ctx";
  * @returns {Promise<void>}
  */
 export default async function interactionCreate(interaction) {
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         try {
             const command = ctx.commands.get(interaction.commandName);
             if (!command) {
@@ -32,7 +33,7 @@ export default async function interactionCreate(interaction) {
                 console.error(`Error while handling a command\n${e.stack}`);
             }
         }
-    } else if (interaction.isAutocomplete()) {
+    } else if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
         try {
             const command = ctx.commands.get(interaction.commandName);
             if (!command || !command.autocompleter) {
@@ -55,6 +56,7 @@ export default async function interactionCreate(interaction) {
         try {
             const args = interaction.customId.split(".");
             const buttonName = args.shift();
+            if (!buttonName) throw new Error("No button name found");
             const button = ctx.buttons.get(buttonName);
             if (!button) {
                 console.error(`Unhandled button "${buttonName}"`);

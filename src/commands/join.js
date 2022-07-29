@@ -1,14 +1,15 @@
+import { ApplicationCommandType } from "discord.js";
 import { ctx } from "../ctx";
 
 /** @type {import("discord.js").ApplicationCommandData} */
 export const data = {
     name: "join",
     description: "Join the leaderboards",
-    type: "CHAT_INPUT",
+    type: ApplicationCommandType.ChatInput,
 };
 
 /**
- * @param {import("discord.js").CommandInteraction} command
+ * @param {import("discord.js").ChatInputCommandInteraction} command
  * @returns {Promise<void>}
  */
 export async function run(command) {

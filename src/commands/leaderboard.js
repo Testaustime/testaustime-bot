@@ -1,4 +1,12 @@
-import { MessageActionRow, MessageButton, MessageEmbed, Util } from "discord.js";
+import {
+    ApplicationCommandType,
+    ActionRowBuilder,
+    ButtonBuilder,
+    EmbedBuilder,
+    Colors,
+    escapeMarkdown,
+    ButtonStyle,
+} from "discord.js";
 import { config } from "../config";
 import { ctx } from "../ctx";
 import { TimeUtil } from "../lib/TimeUtil";
@@ -7,7 +15,7 @@ import { TimeUtil } from "../lib/TimeUtil";
 export const data = {
     name: "leaderboard",
     description: "Show general leaderboard",
-    type: "CHAT_INPUT",
+    type: ApplicationCommandType.ChatInput,
 };
 
 /**
@@ -28,7 +36,7 @@ export async function updateLeaderboardCache() {
 
 /**
  * Test for data availability
- * @param {import("discord.js").CommandInteraction | import("discord.js").ButtonInteraction} interaction
+ * @param {import("discord.js").ChatInputCommandInteraction | import("discord.js").ButtonInteraction} interaction
  * @returns {Promise<boolean>}
  */
 export async function leaderboardNotAvailable(interaction) {
@@ -46,10 +54,10 @@ export async function leaderboardNotAvailable(interaction) {
  * Create the nth page of a leaderboard embed and necessary buttons for user
  * @param {string} user
  * @param {number} page
- * @returns {import("discord.js").InteractionReplyOptions}
+ * @returns {import("discord.js").InteractionReplyOptions & import("discord.js").InteractionUpdateOptions}
  */
 export function createLeaderboardMessage(user, page) {
-    const PER_PAGE = 25;
+    const PER_PAGE = 15;
 
     if (page >= Math.ceil(ctx.cache.leaderboard.length / PER_PAGE)) page = 0;
 
@@ -57,14 +65,14 @@ export function createLeaderboardMessage(user, page) {
         .sort((a, b) => b.time_coded - a.time_coded)
         .slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle("Leaderboard (Past 7 days)")
-        .setColor("AQUA")
+        .setColor(Colors.Aqua)
         .setDescription(
             top
                 .map(
                     (u, i) =>
-                        `**${PER_PAGE * page + i}.** ${Util.escapeMarkdown(
+                        `**${PER_PAGE * page + i}.** ${escapeMarkdown(
                             u.username
                         )} - \`${TimeUtil.formatSecond(u.time_coded)}\``
                 )
@@ -72,23 +80,26 @@ export function createLeaderboardMessage(user, page) {
         )
         .setTimestamp();
 
-    const backwards = new MessageButton()
+    const backwards = new ButtonBuilder()
         .setDisabled(page === 0)
         .setEmoji("◀️")
-        .setStyle("PRIMARY")
+        .setStyle(ButtonStyle.Primary)
         .setCustomId(`leaderboard.${user}.${page - 1}`);
-    const forwards = new MessageButton()
+    const forwards = new ButtonBuilder()
         .setDisabled(ctx.cache.leaderboard.length <= PER_PAGE * (page + 1))
         .setEmoji("▶️")
-        .setStyle("PRIMARY")
+        .setStyle(ButtonStyle.Primary)
         .setCustomId(`leaderboard.${user}.${page + 1}`);
-    const row = new MessageActionRow().addComponents(backwards, forwards);
+    const row =
+        /** @type {import("discord.js").ActionRowBuilder<import("discord.js").ButtonBuilder>} */ (
+            new ActionRowBuilder()
+        ).addComponents(backwards, forwards);
 
     return { embeds: [embed], components: [row] };
 }
 
 /**
- * @param {import("discord.js").CommandInteraction} command
+ * @param {import("discord.js").ChatInputCommandInteraction} command
  * @returns {Promise<void>}
  */
 export async function run(command) {

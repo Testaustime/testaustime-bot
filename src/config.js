@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @typedef Config
  * @property {string} discordToken

@@ -1,4 +1,11 @@
-import { MessageEmbed, Util } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    Colors,
+    EmbedBuilder,
+    escapeInlineCode,
+    escapeMarkdown,
+} from "discord.js";
 import { ctx } from "../ctx";
 import { TimeUtil } from "../lib/TimeUtil";
 
@@ -6,17 +13,17 @@ import { TimeUtil } from "../lib/TimeUtil";
 export const data = {
     name: "user",
     description: "Data about a specific user",
-    type: "CHAT_INPUT",
+    type: ApplicationCommandType.ChatInput,
     options: [
         {
-            type: "STRING",
+            type: ApplicationCommandOptionType.String,
             name: "user",
             description: "The user to get data about",
             required: true,
             autocomplete: true,
         },
         {
-            type: "STRING",
+            type: ApplicationCommandOptionType.String,
             name: "timeframe",
             description: "Time range from which to accumulate data from. Default to month.",
             required: false,
@@ -40,14 +47,14 @@ export const data = {
             ],
         },
         {
-            type: "STRING",
+            type: ApplicationCommandOptionType.String,
             name: "language",
             description: "Language to filter for",
             required: false,
             autocomplete: true,
         },
         {
-            type: "STRING",
+            type: ApplicationCommandOptionType.String,
             name: "project",
             description: "Project to filter for",
             required: false,
@@ -84,7 +91,7 @@ async function getOrFetchUser(user) {
 }
 
 /**
- * @param {import("discord.js").CommandInteraction} command
+ * @param {import("discord.js").ChatInputCommandInteraction} command
  * @returns {Promise<void>}
  */
 export async function run(command) {
@@ -94,7 +101,7 @@ export async function run(command) {
 
     if (!ctx.cache.users.includes(user)) {
         await command.reply({
-            content: `User \`${Util.escapeInlineCode(user)}\` has not allowed data collection`,
+            content: `User \`${escapeInlineCode(user)}\` has not allowed data collection`,
             ephemeral: true,
         });
         return;
@@ -146,11 +153,11 @@ export async function run(command) {
         else languages[entry.language] += entry.duration;
     }
 
-    const MAX_LIST_LENGTH = 15;
+    const MAX_LIST_LENGTH = 10;
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle(user)
-        .setColor("AQUA")
+        .setColor(Colors.Aqua)
         .setDescription(
             `Total time programmed in ${
                 {
@@ -161,34 +168,38 @@ export async function run(command) {
                 }[timeframe]
             } \`${TimeUtil.formatSecond(time)}\``
         )
-        .addField(
-            `Languages ${
-                Object.keys(languages).length >= MAX_LIST_LENGTH ? `(top ${MAX_LIST_LENGTH})` : ""
-            }`,
-            Object.entries(languages)
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, MAX_LIST_LENGTH)
-                .map(
-                    ([l, t], i) =>
-                        `**${i + 1}.** ${Util.escapeMarkdown(l)} \`${TimeUtil.formatSecond(t)}\``
-                )
-                .join("\n"),
-            true
-        )
-        .addField(
-            `Projects ${
-                Object.keys(projects).length > MAX_LIST_LENGTH ? `(top ${MAX_LIST_LENGTH})` : ""
-            }`,
-            Object.entries(projects)
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, MAX_LIST_LENGTH)
-                .map(
-                    ([n, t], i) =>
-                        `**${i + 1}.** ${Util.escapeMarkdown(n)} \`${TimeUtil.formatSecond(t)}\``
-                )
-                .join("\n"),
-            true
-        )
+        .addFields([
+            {
+                name: `Languages ${
+                    Object.keys(languages).length >= MAX_LIST_LENGTH
+                        ? `(top ${MAX_LIST_LENGTH})`
+                        : ""
+                }`,
+                value: Object.entries(languages)
+                    .sort(([, a], [, b]) => b - a)
+                    .slice(0, MAX_LIST_LENGTH)
+                    .map(
+                        ([l, t], i) =>
+                            `**${i + 1}.** ${escapeMarkdown(l)} \`${TimeUtil.formatSecond(t)}\``
+                    )
+                    .join("\n"),
+                inline: true,
+            },
+            {
+                name: `Projects ${
+                    Object.keys(projects).length > MAX_LIST_LENGTH ? `(top ${MAX_LIST_LENGTH})` : ""
+                }`,
+                value: Object.entries(projects)
+                    .sort(([, a], [, b]) => b - a)
+                    .slice(0, MAX_LIST_LENGTH)
+                    .map(
+                        ([n, t], i) =>
+                            `**${i + 1}.** ${escapeMarkdown(n)} \`${TimeUtil.formatSecond(t)}\``
+                    )
+                    .join("\n"),
+                inline: true,
+            },
+        ])
         .setTimestamp();
 
     await command.reply({ embeds: [embed] });
@@ -219,7 +230,10 @@ export async function autocompleter(autocomplete) {
                 return;
             }
             const languages = activity
-                .reduce((a, c) => (a.includes(c.language) ? a : a.concat(c.language)), [])
+                .reduce(
+                    (a, c) => (a.includes(c.language) ? a : a.concat(c.language)),
+                    /** @type {string[]} */ ([])
+                )
                 .filter(Boolean);
             await autocomplete.respond(
                 languages
@@ -231,14 +245,21 @@ export async function autocompleter(autocomplete) {
             break;
         }
         case "project": {
-            const user = autocomplete.options.getString("user", false) ?? "";
+            const user = autocomplete.options.getString("user", false);
+            if (!user) {
+                await autocomplete.respond([]);
+                return;
+            }
             const activity = await getOrFetchUser(user);
             if (!activity) {
                 await autocomplete.respond([]);
                 return;
             }
             const projects = activity
-                .reduce((a, c) => (a.includes(c.project_name) ? a : a.concat(c.project_name)), [])
+                .reduce(
+                    (a, c) => (a.includes(c.project_name) ? a : a.concat(c.project_name)),
+                    /** @type {string[]} */ ([])
+                )
                 .filter(Boolean);
             await autocomplete.respond(
                 projects
