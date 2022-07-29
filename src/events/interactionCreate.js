@@ -1,4 +1,3 @@
-import { InteractionType } from "discord.js";
 import { ctx } from "../ctx";
 
 /**
@@ -33,7 +32,7 @@ export default async function interactionCreate(interaction) {
                 console.error(`Error while handling a command\n${e.stack}`);
             }
         }
-    } else if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+    } else if (interaction.isAutocomplete()) {
         try {
             const command = ctx.commands.get(interaction.commandName);
             if (!command || !command.autocompleter) {
