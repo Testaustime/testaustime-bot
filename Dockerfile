@@ -24,7 +24,7 @@ ENV NODE_ENV="production"
 
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache dumb-init
+    apk add --no-cache dumb-init font-noto
 
 RUN chown -R node:node /app
 
