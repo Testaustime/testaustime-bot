@@ -22,8 +22,7 @@
     },
     "homepage": "https://github.com/Testaustime/testaustime-bot#readme",
     "engines": {
-        "node": ">=16",
-        "npm": ">=7"
+        "node": ">=18"
     },
     "commitlint": {
         "extends": [
@@ -86,10 +85,10 @@
         ]
     },
     "dependencies": {
-        "@napi-rs/canvas": "^0.1.25",
+        "@napi-rs/canvas": "^0.1.51",
         "bent": "^7.3.12",
-        "discord.js": "^14.1.0",
-        "dotenv": "^16.0.1"
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.4.5"
     },
     "devDependencies": {
         "@commitlint/cli": "^17.0.3",
